@@ -7,7 +7,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e9fe4694-4f44-41db-872d-bc13a66b3088" name="Changes" comment="" />
+    <list default="true" id="e9fe4694-4f44-41db-872d-bc13a66b3088" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.LinqTutorials/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.LinqTutorials/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/LinqTasks/Tasks.cs" beforeDir="false" afterPath="$PROJECT_DIR$/LinqTasks/Tasks.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -78,7 +81,7 @@
       <workItem from="1717589327394" duration="213000" />
       <workItem from="1717589586511" duration="595000" />
       <workItem from="1717590642312" duration="412000" />
-      <workItem from="1717591147199" duration="439000" />
+      <workItem from="1717591147199" duration="3113000" />
     </task>
     <servers />
   </component>
