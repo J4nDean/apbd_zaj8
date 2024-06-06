@@ -1,4 +1,5 @@
-﻿using LinqTasks.Extensions;
+﻿using System.Threading.Tasks.Dataflow;
+using LinqTasks.Extensions;
 using LinqTasks.Models;
 
 namespace LinqTasks;
@@ -55,8 +56,8 @@ public static partial class Tasks
     ///    SELECT ename AS Nazwisko, job AS Praca FROM Emps;
     /// </summary>
     public static IEnumerable<object> Task5()
-    {
-        return null;
+    {  
+        return Emps.Select(emps => new {Nazwisko = emps.Ename, Praca = emps.Job});
     }
 
     /// <summary>
@@ -66,7 +67,10 @@ public static partial class Tasks
     /// </summary>
     public static IEnumerable<object> Task6()
     {
-        return null;
+        return Emps.Join(Depts, 
+            emp => emp.Deptno, 
+            dept => dept.Deptno, 
+            (emp, dept) => new { emp.Ename, emp.Job, dept.Dname });
     }
 
     /// <summary>
@@ -74,7 +78,9 @@ public static partial class Tasks
     /// </summary>
     public static IEnumerable<object> Task7()
     {
-        return null;
+        return Emps
+            .GroupBy(emp => emp.Job)
+            .Select(group => new { Praca = group.Key, LiczbaPracownikow = group.Count() });
     }
 
     /// <summary>
@@ -83,7 +89,7 @@ public static partial class Tasks
     /// </summary>
     public static bool Task8()
     { 
-        return false;
+        return Emps.Any(emps => emps.Job == "Backend programmer");
     }
 
     /// <summary>
@@ -92,7 +98,11 @@ public static partial class Tasks
     /// </summary>
     public static Emp Task9()
     {
-        return null;
+        return Emps
+            .Where(emps => emps.Job == "Frontend programmer")
+            .OrderByDescending(emps => emps.HireDate)
+            .First();
+
     }
 
     /// <summary>
@@ -102,7 +112,9 @@ public static partial class Tasks
     /// </summary>
     public static IEnumerable<object> Task10()
     {
-        return null;
+        return Emps
+            .Select(emp => new { emp.Ename, emp.Job, emp.HireDate })
+            .Union(new[] { new { Ename = "Brak wartości", Job = (string)null, HireDate = (DateTime?)null } });;
     }
 
     /// <summary>
@@ -118,7 +130,13 @@ public static partial class Tasks
     /// </summary>
     public static IEnumerable<object> Task11()
     {
-        return null;
+        return Depts
+            .Select(dept => new 
+            {
+                name = dept.Dname,
+                numOfEmployees = Emps.Count(emp => emp.Deptno == dept.Deptno)
+            })
+            .Where(dept => dept.numOfEmployees > 1);
     }
 
     /// <summary>
@@ -129,9 +147,20 @@ public static partial class Tasks
     /// </summary>
     public static IEnumerable<Emp> Task12()
     {
-        IEnumerable<Emp> result = Emps.GetEmpsWithSubordinates();
-        
-        return result;
+        IEnumerable<Emp> GetEmpsWithSubordinates(IEnumerable<Emp> employees)
+        {
+            if (employees == null)
+            {
+                throw new ArgumentNullException(nameof(employees));
+            }
+
+            return employees
+                .Where(e => employees.Any(sub => sub.Mgr != null && sub.Mgr.Empno == e.Empno)) 
+                .OrderBy(e => e.Ename) 
+                .ThenByDescending(e => e.Salary); 
+        }
+
+        return GetEmpsWithSubordinates(Emps);
     }
 
     /// <summary>
@@ -141,10 +170,12 @@ public static partial class Tasks
     ///     Zakładamy, że zawsze będzie jedna taka liczba.
     ///     Np: {1,1,1,1,1,1,10,1,1,1,1} => 10
     /// </summary>
-    public static int Task13(int[] arr)
-    {
-        return -1;
-    }
+public static int Task13(int[] arr)
+{
+    return arr.GroupBy(x => x)
+               .First(group => group.Count() % 2 != 0)
+               .Key;
+}
 
     /// <summary>
     ///     Zwróć tylko te departamenty, które mają 5 pracowników lub nie mają pracowników w ogóle.
@@ -152,6 +183,12 @@ public static partial class Tasks
     /// </summary>
     public static IEnumerable<Dept> Task14()
     {
-        return null;
+        return Depts
+            .Where(dept => 
+            {
+                var empCount = Emps.Count(emp => emp.Deptno == dept.Deptno);
+                return empCount == 5 || empCount == 0;
+            })
+            .OrderBy(dept => dept.Dname);
     }
 }
